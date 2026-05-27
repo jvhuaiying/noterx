@@ -15,7 +15,7 @@ from app.api.routes import router as api_router
 from app import local_memory
 from app.database import init_database
 
-DB_PATH = Path(__file__).parent.parent.parent / "data" / "baseline.db"
+DB_PATH = Path(__file__).parent.parent / "data" / "baseline.db"
 FRONTEND_DIST = os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist")
 
 

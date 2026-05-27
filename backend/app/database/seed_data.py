@@ -145,15 +145,18 @@ def generate_notes(category, titles, tags_pool, count=500):
     return notes
 
 
-def seed_data(db_path: Path):
-    """若 notes 表为空，则填充种子数据"""
+def seed_data(db_path: Path, force: bool = False):
+    """若 notes 表为空，则填充种子数据；force=True 时清空后重写"""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COUNT(*) FROM notes")
-    if cursor.fetchone()[0] > 0:
-        conn.close()
-        return
+    if force:
+        cursor.execute("DELETE FROM notes")
+    else:
+        cursor.execute("SELECT COUNT(*) FROM notes")
+        if cursor.fetchone()[0] > 0:
+            conn.close()
+            return
 
     all_notes = []
     all_notes.extend(generate_notes("food", FOOD_TITLES, FOOD_TAGS, 500))

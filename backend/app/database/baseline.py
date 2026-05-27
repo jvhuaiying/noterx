@@ -166,15 +166,18 @@ def compute_for_category(cursor, category):
     print(f"  [{category}] 已计算 baseline 指标（含粉丝分层与标签分桶）")
 
 
-def compute_baseline(db_path: Path):
-    """计算所有垂类的 baseline 统计指标"""
+def compute_baseline(db_path: Path, force: bool = False):
+    """计算所有垂类的 baseline 统计指标；force=True 时清空后重算"""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COUNT(*) FROM baseline_stats")
-    if cursor.fetchone()[0] > 0:
-        conn.close()
-        return
+    if force:
+        cursor.execute("DELETE FROM baseline_stats")
+    else:
+        cursor.execute("SELECT COUNT(*) FROM baseline_stats")
+        if cursor.fetchone()[0] > 0:
+            conn.close()
+            return
 
     for cat in ["food", "fashion", "tech", "travel", "beauty", "fitness", "lifestyle", "home"]:
         compute_for_category(cursor, cat)
